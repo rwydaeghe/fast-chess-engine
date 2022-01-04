@@ -1,0 +1,13 @@
+the drawback of pypy is you need to install all new packages that are not always supported, only the basic ones are
+
+it seems that pypy packages are tough to install for windows: https://stackoverflow.com/questions/67357758/how-to-install-numpy-in-pypy-on-windows
+
+but this is a workaround: https://coderedirect.com/questions/84626/installing-numpy-with-pip-on-windows-10-for-python-3-7
+
+i manually downloaded numpy-1.21.5+mkl-pp38-pypy38_pp73-win_amd64.whl and did pypy -m pip install numpy-1.21.5+mkl-pp38-pypy38_pp73-win_amd64.whl and it worked
+
+but ultimately it appears that PyPy is slower, which was said online:
+-pypy can increase speed for non numpy
+-but if there is numpy in it in will def only be the same, or worse
+the speed decrease is significant though: 4.5x slower than normal python
+especially get_path_moves, which relies heavily on numpy, is a lot slower

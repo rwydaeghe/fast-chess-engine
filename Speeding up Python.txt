@@ -1,0 +1,45 @@
+-- Numba
+I have done some tests in chess engine comments.
+It is said that numba is better speed wise than cython especially when scaling https://www.pickupbrain.com/python/speed-up-python-up-to-1-million-times-cython-vs-numba/
+numba can get you 3 to 6 orders of magnitude speeds, while cython max 2 or 3
+the numba website demos are more conservative
+you always want nopython mode, never object mode bcs that is slow
+The problem here is that it caches your arguments to types numba likes (ints, arrays, bools, ...) and definitely not arbitrary objects
+this includes the first 'self' argument.
+You could fix this by making the method static with @staticmethod and giving the necessary info from whatever you need of self
+but that is a bit annoying. I havent tried doing that
+another way is with the experimental @jitclass where it does njit for the whole class. but then you need to type your attributes of the init
+and not every init has the numba allowed types
+and also you cant have inheritance which I have here (although i could rewrite with copy paste)
+
+-- Cython
+Serious rewriting necessary. Granular control. Need to type all arguments. I havent tried it expect some tests in Chess Engine.
+You need a bunch of steps before you run something (a setup file and pyx file)
+what is nice if the easy interfacing: you can have just one part of the program be cython and interface the non-heavy code with it
+There are almost no limitations to what you can do: https://www.reddit.com/r/Python/comments/42iq6o/basic_python_features_that_cython_cant_handle/ 
+I guess you know C++ so could be okay but probably start your project from scratch with this if possible
+the profiler doesnt work out of the box, but you can ultimately profile your code with some fidgeting (see internet)
+idk about debugging, probably similar
+Cython is the most supported speed-upper, but is still relatively smaller than python, so you risk not finding the correct SO threads for specific things if you spend a lot of time on coding with Cython. Also goes for other speed-uppers
+
+-- PyPy
+probably the easiest bcs you just need to change python.exe to pypy.exe and have the new libraries
+the drawback of pypy is you need to install all new packages that are not always supported, only the basic ones are
+it seems that pypy packages are tough to install for windows: https://stackoverflow.com/questions/67357758/how-to-install-numpy-in-pypy-on-windows
+but this is a workaround: https://coderedirect.com/questions/84626/installing-numpy-with-pip-on-windows-10-for-python-3-7
+i manually downloaded numpy-1.21.5+mkl-pp38-pypy38_pp73-win_amd64.whl and did pypy -m pip install numpy-1.21.5+mkl-pp38-pypy38_pp73-win_amd64.whl and it worked
+but ultimately it appears that PyPy is slower, which was said online:
+-pypy can increase speed for non numpy
+-but if there is numpy in it in will def only be the same, or worse
+the speed decrease is significant though: 4.5x slower than normal python
+especially get_path_moves, which relies heavily on numpy, is a lot slower
+
+-- Caching
+A bit of a weak speed up I think, application dependent
+But i tried it in Chess Engine. 
+I did not see speed improvements. intuitively I really expect it to work tho.
+The hashing does seem to take a bit of time but this may be bcs im hasing an object (including self!) instead of basic arguments like ints
+so ideally you make the arguments simple enough with some refactoring
+the canonical library functools.lru_cache does not seem to work bcs ""C++ isnt installed"" (although it is)
+but other library cachetools.cached works fine and has relatively big support too
+
