@@ -78,18 +78,29 @@ class Board(object):
 			print("There is no piece at the start location.")
 			return None, False
 
-	def start_game(self, white_player, black_player):
+	def start_game(self, white_player, black_player, max_nbr_turns=True):
 		self.white_player=white_player
 		self.black_player=black_player
 		i=1
-		while i<4:
-			if i % 2 == 1:
-				print("White plays move " + str(i) + "...")
-				self.play_turn(white_player, 'white')
-			else:
-				print("Black plays move " + str(i) + "...")
-				self.play_turn(black_player, 'black')
-			i+=1
+		if type(max_nbr_turns) is int:
+			while i<max_nbr_turns:
+				if i % 2 == 1:
+					print("White plays move " + str(i) + "...")
+					self.play_turn(white_player, 'white')
+				else:
+					print("Black plays move " + str(i) + "...")
+					self.play_turn(black_player, 'black')
+				i+=1
+		else:
+			while max_nbr_turns:
+				if i % 2 == 1:
+					print("White plays move " + str(i) + "...")
+					self.play_turn(white_player, 'white')
+				else:
+					print("Black plays move " + str(i) + "...")
+					self.play_turn(black_player, 'black')
+				i+=1
+
 
 	def get_piece(self, x, y):
 		if x>=0 and x<=7 and y>=0 and y<=7:
